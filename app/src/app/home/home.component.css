@@ -1,0 +1,10 @@
+img.fullscreen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* sposta l'immagine al centro reale */
+  width: 90vw;      /* 90% della larghezza dello schermo */
+  height: auto;     /* mantiene proporzioni */
+  object-fit: contain;
+  display: block;
+}
