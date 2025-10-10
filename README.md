@@ -6,3 +6,10 @@ npx cap open android --> apre android studio e mostra l'app
 Una volta apaerto android studio eseguire questo comando      adb reverse tcp:3000 tcp:3000 che permette ad Android di comunicare conn il localhost.
 Il comando ritorna la porta quando vede che anadroid studio è stato eseguito sennò non ritona niente. Quindi eseguire il comando solo quando si andorid studio
 viene eseguito in modo da vedere la porta.
+
+
+
+
+MOINGO DB
+ 
+docker run -d --name mongodb  -p 27017:27017  mongo
