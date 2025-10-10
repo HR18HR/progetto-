@@ -1,11 +1,15 @@
 import express from 'express'
+import mongoose from 'mongoose';
 const app=express(); //Creazione server con express  
 import cors from 'cors';
 app.use(cors());
 app.use(express.json())
 app.listen(3000,'0.0.0.0',()=>{
-    console.log("sono in ascolto ");
-})
-app.get("/get",(req,res)=>{
-    res.json({data:"ciao"});
+    mongoose.connect("mongodb://localhost:27017").then(()=>{
+        console.log("sono in ascolto ");
+    })
+    .catch(()=>{
+        console.log("Errore")
+    })
+    
 })
