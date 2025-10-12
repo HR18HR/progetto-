@@ -24,20 +24,25 @@ app.post("/registrazione",(req,res)=>{
     User.create({email:req.body.email,digest:req.body.password,citta:req.body.città,salt:salt})
     .then((user)=>{
        
-        user.save();
+      console.log("Utente Creato");
        res.json({message:"Utente Creato"})
     })
     .catch((err)=>{
       res.status(409).json({message:"Errore durante la creazione del tuo profilo ,dati già in uso "});
     })
 })
+
 //ROTTA per l'autenticazione: Uso di basic senza sessione che verrà gestita dai jwt.: ENDPOINT -> /login
-Rotta.post("/login", passport.authenticate('basic', { session: false }), (req, res) => {
-  let user=<User>req.user
-   Users_DB.findOne({email:user.email})
+app.post("/login", passport.authenticate('basic', { session: false }), (req, res) => {
+  let user=<{email:string}>req.user
+   User.findOne({email:user.email})
         .then((User) => {
             if(User!=null){
-        })
+              console.log("utente loggato");
+              res.status(200).json({message:"ok"});
+            }
+})
+        
         .catch((err)=>{
             res.status(500).json({ message: "Errore interno durante la ricerca dell'utente" })
         })
@@ -54,7 +59,7 @@ passport.use(new BasicStrategy(
             return done(null, false);
           }
   
-          if () {
+          if (Checkpass(password,user)) {
             // Password corretta
             return done(null, user);
           } else {
@@ -68,3 +73,11 @@ passport.use(new BasicStrategy(
         });
     }
   ));
+
+//funzione di controllo paassword
+  let Checkpass=function(password:any,user:any): boolean {
+    const hmac = crypto.createHmac('sha512', user.salt);
+    hmac.update(password);
+    const digest = hmac.digest('hex');
+    return user.digest === digest;
+  }
