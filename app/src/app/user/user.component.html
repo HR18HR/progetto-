@@ -7,7 +7,7 @@
 
   <!-- Card principale -->
   <main class="card">
-    <form>
+  
       <label class="label" for="email">Email</label>
       <input
         id="email"
@@ -34,8 +34,7 @@
         [(ngModel)]="city"
       />
 
-      <button class="btn" type="submit">Accedi</button>
-    </form>
+      <button (click)="Registrazione()" class="btn" type="submit">Registrati</button>
   </main>
 
   <footer class="footer">

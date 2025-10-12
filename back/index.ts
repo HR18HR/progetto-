@@ -21,7 +21,7 @@ app.listen(3000,'0.0.0.0',()=>{
 app.post("/registrazione",(req,res)=>{
     let salt=crypto.randomBytes(16).toString('hex');
     let digest=crypto.createHmac('sha512',salt).update(req.body.password).digest('hex');
-    User.create({email:req.body.email,digest:req.body.password,citta:req.body.città,salt:salt})
+    User.create({email:req.body.email,digest:digest,citta:req.body.citta,salt:salt})
     .then((user)=>{
        
       console.log("Utente Creato");
