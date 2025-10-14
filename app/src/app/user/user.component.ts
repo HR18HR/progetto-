@@ -14,7 +14,9 @@ declare const google: any;
 export class UserComponent {
   email:string=" ";
   password:string="";
-  city:string=" ";
+  city:string="";
+  long:number=0;
+  lat:number=0;
 
 constructor(public service:BackService){}
 
@@ -22,22 +24,38 @@ Registrazione(){
   this.service.Registrazione(this.email,this.password,this.city).subscribe({
     next:data=>{console.log(data.message)},
       error:err=>console.log(err.error.message)
+
       
   }) 
+
 }
 
 
-  ngAfterViewInit(): void {
-    const input = document.getElementById('city') as HTMLInputElement;
-    if (!input) return;
+initAutocomplete(): void {
+  const input = document.getElementById('city') as HTMLInputElement;
+  if (!input) return;
 
-    const autocomplete = new google.maps.places.Autocomplete(input, {
-      types: ['(cities)']
-    });
+  const autocomplete = new google.maps.places.Autocomplete(input, {
+    types: ['(cities)'],
+    fields: ['name', 'geometry']
+  });
 
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
-      this.city = place.formatted_address || input.value;
-    });
+  autocomplete.addListener('place_changed', () => {
+    const place = autocomplete.getPlace();
+    if (!place.geometry) return;
+
+    this.city = place.name;
+    this.lat=place.geometry.location.lat()
+    this.long=place.geometry.location.lng()
+ 
+  });
+
+  console.log('Autocomplete inizializzato');
+}
+
+
+  ngAfterViewInit():void{
+    this.initAutocomplete();
+
   }
 }
