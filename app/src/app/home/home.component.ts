@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 export class HomeComponent {
 constructor(public Rout:Router,){}
  Naviga():void{
-  this.Rout.navigate(['/user']);
+  this.Rout.navigate(['/login']);
 }
 
 

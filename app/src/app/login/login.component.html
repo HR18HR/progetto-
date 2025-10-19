@@ -1,1 +1,38 @@
-<p>login works!</p>
+<!-- login.component.html -->
+<div class="page">
+  <div class="card">
+    <h1 class="title">Accedi</h1>
+
+    <label for="email">Email</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      autocomplete="email"
+      placeholder="nome@esempio.com"
+      [(ngModel)]="email"
+    />
+
+    <label for="password">Password</label>
+    <input
+      id="password"
+      name="password"
+      type="password"
+      autocomplete="current-password"
+      placeholder="••••••••"
+      [(ngModel)]="password"
+    />
+
+    <button (click)="Login()">Login</button>
+
+   
+    <div *ngIf="risposta === 'Utente Loggato'" class="success">
+      ✅ Utente loggato
+    </div>
+
+    <div *ngIf="risposta === 'Utente non Autorizzato'|| risposta=== 'Errore riprova più tardi' " class="error">
+      <p>{{risposta}}</p>
+    </div>
+  </div>
+  <a routerLink="/user">Non Hai un Account?Registrati</a>
+</div>

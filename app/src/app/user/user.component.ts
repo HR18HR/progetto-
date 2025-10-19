@@ -4,30 +4,37 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'; 
 import { AfterViewInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { NgIf } from '@angular/common';
 declare const google: any;
 @Component({
   selector: 'app-user',
-  imports: [FormsModule],
+  imports: [FormsModule,NgIf],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })
+
 export class UserComponent {
   email:string=" ";
   password:string="";
   city:string="";
   long:number=0;
   lat:number=0;
+  risposta:string="";
 
-constructor(public service:BackService){}
+constructor(public service:BackService,public route:Router){}
 
 Registrazione(){
   this.service.Registrazione(this.email,this.password,this.city).subscribe({
-    next:data=>{console.log(data.message)},
-      error:err=>console.log(err.error.message)
+    next:data=>this.risposta=data.message,
+      error:err=>{if(err.status==409)this.risposta="Credenziali già in Uso "
+        else this.risposta="Errore Riprova più Tardi";
+      }
 
       
   }) 
-
+  
+  setTimeout(()=>{this.route.navigate(["/login"])},2000)
 }
 
 
@@ -50,7 +57,6 @@ initAutocomplete(): void {
  
   });
 
-  console.log('Autocomplete inizializzato');
 }
 
 

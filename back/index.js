@@ -26,7 +26,7 @@ app.post("/registrazione", (req, res) => {
     let digest = crypto_1.default.createHmac('sha512', salt).update(req.body.password).digest('hex');
     db_1.default.create({ email: req.body.email, digest: digest, citta: req.body.citta, salt: salt })
         .then((user) => {
-        console.log("Utente Creato");
+        console.log("Utente creato");
         res.json({ message: "Utente Creato" });
     })
         .catch((err) => {
@@ -39,8 +39,8 @@ app.post("/login", passport_1.default.authenticate('basic', { session: false }),
     db_1.default.findOne({ email: user.email })
         .then((User) => {
         if (User != null) {
-            console.log("utente loggato");
-            res.status(200).json({ message: "ok" });
+            console.log("Utente Loggato");
+            res.status(200).json({ message: "Utente Loggato" });
         }
     })
         .catch((err) => {

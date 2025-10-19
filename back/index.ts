@@ -23,8 +23,7 @@ app.post("/registrazione",(req,res)=>{
     let digest=crypto.createHmac('sha512',salt).update(req.body.password).digest('hex');
     User.create({email:req.body.email,digest:digest,citta:req.body.citta,salt:salt})
     .then((user)=>{
-       
-      console.log("Utente Creato");
+       console.log("Utente Creato")
        res.json({message:"Utente Creato"})
     })
     .catch((err)=>{
@@ -38,8 +37,8 @@ app.post("/login", passport.authenticate('basic', { session: false }), (req, res
    User.findOne({email:user.email})
         .then((User) => {
             if(User!=null){
-              console.log("utente loggato");
-              res.status(200).json({message:"ok"});
+              console.log("Utente Loggato");
+              res.status(200).json({message:"Utente Loggato"});
             }
 })
         

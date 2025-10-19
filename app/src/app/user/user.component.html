@@ -1,40 +1,51 @@
 <div class="page">
   <!-- Header con logo e titolo -->
   <header class="header">
-    <img src="logo.png"  />
+    <img src="logo.png" />
     <h1 class="title">AlertUp</h1>
   </header>
 
   <!-- Card principale -->
   <main class="card">
-  
-      <label class="label" for="email">Email</label>
-      <input
-        id="email"
-        type="email"
-        class="input"
-        placeholder="es. nome@dominio.com"
-      [(ngModel)]="email"/>
 
-      <label class="label" for="password">Password</label>
-      <input
-        id="password"
-        type="password"
-        class="input"
-        placeholder="Minimo 6 caratteri"
-        [(ngModel)]="password"
-      />
+    <label class="label" for="email">Email</label>
+    <input
+      id="email"
+      type="email"
+      class="input"
+      placeholder="es. nome@dominio.com"
+      [(ngModel)]="email"
+    />
 
-      <label class="label" for="city">Città</label>
-      <input
-        id="city"
-        type="text"
-        class="input"
-        placeholder="Digita la tua città"
-        [(ngModel)]="city"
-      />
+    <label class="label" for="password">Password</label>
+    <input
+      id="password"
+      type="password"
+      class="input"
+      placeholder="Minimo 6 caratteri"
+      [(ngModel)]="password"
+    />
 
-      <button (click)="Registrazione()" class="btn" type="submit">Registrati</button>
+    <label class="label" for="city">Città</label>
+    <input
+      id="city"
+      type="text"
+      class="input"
+      placeholder="Digita la tua città"
+      [(ngModel)]="city"
+    />
+
+    <button (click)="Registrazione()" class="btn" type="submit">Registrati</button>
+
+    <!-- ✅ Messaggi di stato -->
+    <div *ngIf="risposta === 'Utente Creato'" class="success">
+      ✅ Registrazione completata con successo!
+    </div>
+
+    <div *ngIf="risposta === 'Errore Riprova più Tardi' || risposta === 'Credenziali già in Uso '" class="error">
+      <p>{{ risposta }}</p>
+    </div>
+
   </main>
 
   <footer class="footer">
