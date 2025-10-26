@@ -27,4 +27,9 @@ export class BackService {
     return this.http.post<{toke:string,message:string}>('http://localhost:3000/login', {}, { headers: header }) // Fa la POST al backend con l'header Authorization
   }
 
+
+  Meteo(lat:number,long:number):Observable<any>{
+    return this.http.get<any>('https://weather.googleapis.com/v1/currentConditions:lookup?key=AIzaSyAyXWJCKVLDbhqj3Zwby6AsfKmxdX17gak&location.latitude='+lat+'&location.longitude='+long+'&units_system=METRIC')
+
+  }
 }

@@ -1,1 +1,59 @@
-<p>homepage works!</p>
+<div style="text-align: center; padding: 40px;">
+
+
+  <!--  Molto nuvoloso -->
+  <div
+    *ngIf="tipo === 'MOSTLY CLOUDY' || tipo == 'CLOUDY'"
+    class="weather-box"
+  >
+    <img src="nuvolo.png" alt="Nuvoloso" class="weather-icon" />
+  </div>
+
+  <!--  Sole -->
+  <div *ngIf="tipo == 'CLEAR'" class="weather-box">
+    <img src="sole.png" alt="Sole" class="weather-icon" />
+  </div>
+
+  <!-- 🌤️Sole e nuvole -->
+  <div
+    *ngIf="tipo== 'MOSTLY CLEAR' || tipo == 'PARTLY CLOUDY'"
+    class="weather-box"
+  >
+    <img
+      src="nuvolosole.png"
+      alt="Sole e nuvole"
+      class="weather-icon"
+    />
+  </div>
+
+  <!--  Pioggia -->
+  <div
+    *ngIf="
+     tipo == 'WIND AND RAIN' ||
+      tipo == 'LIGHT RAIN SHOWERS' ||
+      tipo == 'CHANCE_OF SHOWERS' ||
+      tipo == 'SCATTERED SHOWERS' ||
+    tipo == 'RAIN HOWERS' ||
+      tipo == 'HEAVY RAIN SHOWERS' ||
+      tipo == 'LIGHT TO MODERATE RAIN' ||
+      tipo == 'MODERATE TO HEAVY RAIN' ||
+      tipo == 'RAIN' ||
+     tipo == 'LIGHT RAIN' ||
+      tipo =='HEAVY RAIN'
+    "
+    class="weather-box"
+  >
+    <img src="pioggia.png" alt="Pioggia" class="weather-icon" />
+  </div>
+
+  <!--  Neve -->
+  <div *ngIf=" temperatura == 0" class="weather-box">
+    <img src="neve.png" alt="Neve" class="weather-icon" />
+  </div>
+
+  <!-- Vento -->
+  <div *ngIf="tipo == 'WINDY'" class="weather-box">
+    <img src="vento.png" alt="Vento" class="weather-icon" />
+  </div>
+</div>
+<p>la Temperatura è.  {{temperatura}}°C</p>

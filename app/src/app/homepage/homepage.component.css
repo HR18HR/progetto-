@@ -1,0 +1,11 @@
+.weather-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.weather-icon {
+  width: 150px;
+  height: 150px;
+}
