@@ -1,3 +1,19 @@
+<!--   Div impostazioni utente -->
+<div>
+<img src="utente_1.png" class="utente">
+<p>{{lat}}</p>
+<p>{{long}}</p>
+
+</div>
+
+
+
+
+
+
+<!-- DIV per il meteo -->
+<div *ngIf="long != 0">
+  <p class="temp">{{temperatura}}°C</p>
 <div style="text-align: center; padding: 40px;">
 
 
@@ -10,7 +26,7 @@
   </div>
 
   <!--  Sole -->
-  <div *ngIf="tipo == 'CLEAR'" class="weather-box">
+  <div *ngIf="tipo == 'CLEAR' || tipo == 'MOSTLY SUNNY' " class="weather-box">
     <img src="sole.png" alt="Sole" class="weather-icon" />
   </div>
 
@@ -47,7 +63,7 @@
   </div>
 
   <!--  Neve -->
-  <div *ngIf=" temperatura == 0" class="weather-box">
+  <div *ngIf="temperatura &lt; 0" class="weather-box">
     <img src="neve.png" alt="Neve" class="weather-icon" />
   </div>
 
@@ -56,4 +72,4 @@
     <img src="vento.png" alt="Vento" class="weather-icon" />
   </div>
 </div>
-<p>la Temperatura è.  {{temperatura}}°C</p>
+</div>

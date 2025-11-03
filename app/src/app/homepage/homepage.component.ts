@@ -9,11 +9,12 @@ import { NgIf } from '@angular/common';
   styleUrl: './homepage.component.css'
 })
 export class HomepageComponent {
-  lat:any;
-  long:any;
+  lat:number=0;
+  long:number=0;
   error:any;
   temperatura:number=0;
   tipo:string="";
+  username:string="";
 constructor(public serv:BackService){}
 
 Meteo(lat:number,long:number){
@@ -38,6 +39,7 @@ Meteo(lat:number,long:number){
           this.lat = position.coords.latitude;
           this.long = position.coords.longitude;
           this.error = null;
+          console.log(this.lat,this.long)
         },
         (err) => {
           console.error('Errore geolocalizzazione:', err);
@@ -52,12 +54,13 @@ Meteo(lat:number,long:number){
     } else {
       this.error = 'La geolocalizzazione non è supportata dal browser.';
     }
-   
   }
   ngAfterViewInit(){
     this.getLocation();
-     setTimeout(()=>{
-      this.Meteo(this.lat,this.long)
-     },1000)
+    setTimeout(()=>{
+      this.Meteo(this.lat,this.long);
+    },4000);
+    this.username=this.serv.username_1
+     
   }
 }

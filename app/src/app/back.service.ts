@@ -8,7 +8,7 @@ import { Buffer } from 'Buffer';
   providedIn: 'root'
 })
 export class BackService {
-
+username_1:string="";
   constructor(public http:HttpClient) { }
   
 
@@ -21,6 +21,7 @@ export class BackService {
 
     // Funzione di login: prende username e password, li concatena con ":" e li codifica in base64 per l'autenticazione Basic
   Log_In(username: string, password: string): Observable<{message:string}> {
+     this.username_1=username;
     const header = new HttpHeaders({
       'Authorization': 'Basic ' + Buffer.from(username.concat(':').concat(password)).toString("base64")
     })
@@ -30,6 +31,7 @@ export class BackService {
 
   Meteo(lat:number,long:number):Observable<any>{
     return this.http.get<any>('https://weather.googleapis.com/v1/currentConditions:lookup?key=AIzaSyAyXWJCKVLDbhqj3Zwby6AsfKmxdX17gak&location.latitude='+lat+'&location.longitude='+long+'&units_system=METRIC')
+    
 
   }
 }

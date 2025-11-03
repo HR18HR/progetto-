@@ -1,11 +1,41 @@
 .weather-box {
-  display: flex;
+  display:grid;
   justify-content: center;
   align-items: center;
   height: 200px;
 }
 
 .weather-icon {
-  width: 150px;
-  height: 150px;
+   position:relative;
+   top:20%;
+   left:0%;
+  width: 200px;
+  height: 170px;
 }
+
+.temp{
+  position:absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+  font-weight: bold;
+  color: rgba(255,255,255,0.7);
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.689);
+  margin: 0;
+}
+/* --- IMMAGINE UTENTE IN ALTO A DESTRA --- */
+.utente {
+  position: fixed;       /* rimane fissa mentre scorri */
+  top: 15px;             /* distanza dal bordo superiore */
+  right: 20px;           /* distanza dal bordo destro */
+  width: 50px;           /* larghezza piccola */
+  height: 50px;          /* altezza proporzionata */
+  border-radius: 50%;    /* forma circolare */
+  object-fit: cover;     /* adatta bene l'immagine */
+  border: 2px solid #ddd;/* piccolo bordo */
+  cursor: pointer;       /* cambia cursore al passaggio */
+  transition: transform 0.2s ease;
+}
+
+

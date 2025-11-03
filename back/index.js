@@ -26,7 +26,7 @@ app.post("/registrazione", (req, res) => {
     let digest = crypto_1.default.createHmac('sha512', salt).update(req.body.password).digest('hex');
     db_1.default.create({ email: req.body.email, digest: digest, citta: req.body.citta, salt: salt })
         .then((user) => {
-        console.log("Utente creato");
+        console.log("Utente Creato");
         res.json({ message: "Utente Creato" });
     })
         .catch((err) => {
