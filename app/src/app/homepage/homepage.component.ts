@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { BackService } from '../back.service';
 import { NgIf } from '@angular/common';
+import { FormsModule, NgModel } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-homepage',
-  imports: [NgIf],
+  imports: [NgIf,FormsModule],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })
@@ -15,7 +17,11 @@ export class HomepageComponent {
   temperatura:number=0;
   tipo:string="";
   username:string="";
-constructor(public serv:BackService){}
+  password:string="";
+  elimina:boolean=false;
+  risposta:{buona:string,negativa:string}={buona:"",negativa:""};
+  change:boolean=false;
+constructor(public serv:BackService,public Router:Router){}
 
 Meteo(lat:number,long:number){
   this.serv.Meteo(lat,long).subscribe({
@@ -31,6 +37,47 @@ Meteo(lat:number,long:number){
     }
   })
 }
+Elimina(){
+this.elimina=!this.elimina;
+}
+EliminaAccount(){
+  this.serv.EliminaAccount(this.username).subscribe({
+    next:data=>{
+      this.elimina=false;
+      this.risposta.buona=data.message;
+      setTimeout(()=>{
+        this.Router.navigate(["/login"])
+      },5000)
+
+    },
+    error:err=>{
+      this.elimina=false;
+      this.risposta.negativa=err.error.message;
+    }
+  })
+}
+
+CambiaPassword(){
+  this.serv.ModificaPassowrd(this.username,this.password).subscribe({
+    next:data=>{
+      this.risposta.buona=data.message;
+    },
+    error:err=>{
+      this.risposta.negativa=err.error.message;
+    }
+  })
+  setTimeout(()=>{
+    this.risposta.buona="";
+    this.risposta.negativa="";
+    this.change=false;
+    this.password="";
+  },2000)
+}
+
+
+  Change(){
+    this.change=!this.change;
+  }
 
   getLocation() {
     if (navigator.geolocation) {
@@ -60,7 +107,7 @@ Meteo(lat:number,long:number){
     setTimeout(()=>{
       this.Meteo(this.lat,this.long);
     },4000);
-    this.username=this.serv.username_1
+   console.log(this.username=this.serv.username_1)
      
   }
 }

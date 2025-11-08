@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
 import { Buffer } from 'Buffer';
+import { EmailValidator } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -33,5 +34,14 @@ username_1:string="";
     return this.http.get<any>('https://weather.googleapis.com/v1/currentConditions:lookup?key=AIzaSyAyXWJCKVLDbhqj3Zwby6AsfKmxdX17gak&location.latitude='+lat+'&location.longitude='+long+'&units_system=METRIC')
     
 
+  }
+
+  ModificaPassowrd(email:string,password:string):Observable<{message:string}>{
+    if(password=="")alert("Password vuota");
+   return this.http.post<{message:string}>("http://localhost:3000/modificapassword",{email:email,password:password})
+  }
+
+  EliminaAccount(email:string): Observable<{message:string}>{
+    return this.http.post<{message:string}>("http://localhost:3000/eliminaccount",{email:email});
   }
 }

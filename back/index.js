@@ -21,6 +21,45 @@ app.listen(3000, '0.0.0.0', () => {
         console.log("Errore");
     });
 });
+app.post("/eliminaccount", (req, res) => {
+    if (req.body.email == "")
+        return res.status(400).json({ message: "Email Vuota" });
+    db_1.default.deleteOne({ email: req.body.email })
+        .then((result) => {
+        if (result.deletedCount == 1)
+            res.json({ message: "Account Eliminato" });
+        else
+            res.status(404).json({ message: "Utente Non Trovato" });
+    })
+        .catch((err) => {
+        res.status(404).json({ message: "Utente Non Trovato" });
+    });
+});
+app.post("/modificapassword", (req, res) => {
+    if (req.body.password == "")
+        return res.status(400).json({ message: "Passoword vuota" });
+    db_1.default.findOne({ email: req.body.email })
+        .then((user) => {
+        if (user) {
+            let digest = crypto_1.default.createHmac('sha512', user === null || user === void 0 ? void 0 : user.salt).update(req.body.password).digest('hex');
+            user.updateOne({ $set: { digest: digest } })
+                .then((user) => {
+                if (user != null)
+                    res.json({ message: "Passoword Modificata" });
+                else
+                    res.json({ message: "Errore Riporova Più Tardi" });
+            })
+                .catch((err) => {
+                res.status(404).json({ message: "Utente Non Trovato" });
+            });
+        }
+        else
+            res.status(404).json({ message: "Utente Non Trovato" });
+    })
+        .catch((err) => {
+        res.status(409).json({ message: "Errore durante la Ricerca dell'Utente " });
+    });
+});
 app.post("/registrazione", (req, res) => {
     let salt = crypto_1.default.randomBytes(16).toString('hex');
     let digest = crypto_1.default.createHmac('sha512', salt).update(req.body.password).digest('hex');

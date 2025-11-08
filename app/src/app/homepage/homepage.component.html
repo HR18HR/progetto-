@@ -1,8 +1,27 @@
 <!--   Div impostazioni utente -->
-<div>
-<img src="utente_1.png" class="utente">
-<p>{{lat}}</p>
-<p>{{long}}</p>
+<div class="user">
+<img src="utente_1.png" class="utente" (click)="Change()">
+<div *ngIf="change==true">
+  <p>Email</p>
+<input type="text" readonly="readonly" placeholder="{{username}}" class="email">
+<p>Password</p>
+<input type="password" [(ngModel)]="password" class="password">
+<button (click)="CambiaPassword()" class="buttoncambia ">Cambia Password</button>
+<u class="elimina" (click)="Elimina()">Elimina Account</u>
+<div  *ngIf="elimina == true" class="divelimina">
+<p id="testo">Vuoi davvero Eliminare il Tuo Account?</p>
+  <button class="si" (click)="EliminaAccount()">SI</button>
+  <button class="x" (click)="Elimina()">X</button>
+</div>
+<div *ngIf="risposta.buona!=''" class="buona">
+  {{risposta.buona}}
+</div>
+<div *ngIf="risposta.negativa!=''" class="negativa">
+  {{risposta.negativa}}
+</div>
+
+
+</div>
 
 </div>
 
@@ -26,7 +45,7 @@
   </div>
 
   <!--  Sole -->
-  <div *ngIf="tipo == 'CLEAR' || tipo == 'MOSTLY SUNNY' " class="weather-box">
+  <div *ngIf="tipo == 'CLEAR' || tipo == 'MOSTLY SUNNY' || tipo == 'SUNNY' " class="weather-box">
     <img src="sole.png" alt="Sole" class="weather-icon" />
   </div>
 
