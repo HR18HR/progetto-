@@ -18,6 +18,7 @@ export class LoginComponent {
 email:string="";
 password:string="";
 risposta:string="";
+passerr:boolean=false;
 
 constructor(public serv:BackService,public rout:Router){}
 
@@ -28,11 +29,12 @@ Login(){
         this.rout.navigate(["/homepage"])
       },2000)
     },
-    error:err=>{if(err.status==401)this.risposta="Utente non Autorizzato"
+    error:err=>{if(err.status==401)this.passerr=true;
         else this.risposta="Errore riprova più tardi"
 
     }
   })
+   setTimeout(()=>this.passerr=false,1000);
 }
 
  

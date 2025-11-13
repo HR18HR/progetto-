@@ -98,3 +98,42 @@ button:hover {
   font-weight: 600;
   text-align: center;
 }
+
+/* Header */
+.header {
+  display: grid;
+  place-items: center;
+  margin: 28px 0 6px;
+  gap: 8px;
+}
+
+.header img {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  object-fit: cover;
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  box-shadow: 0 8px 20px rgba(59,130,246,0.25);
+}
+/* Footer */
+.footer {
+  display: grid;
+  place-items: center;
+  margin: 14px 0 12px;
+  color: #6b7280;
+  font-size: 12px;
+}
+input.errata{
+  border-color: #dc2626 !important; /* bordo rosso */
+  animation: shake 0.3s ease;
+}
+
+/* Animazione di rimbalzo */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}

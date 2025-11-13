@@ -26,15 +26,21 @@ constructor(public service:BackService,public route:Router){}
 
 Registrazione(){
   this.service.Registrazione(this.email,this.password,this.city).subscribe({
-    next:data=>this.risposta=data.message,
+    next:data=>{this.risposta=data.message;setTimeout(()=>{this.route.navigate(["/login"])},2000)},
       error:err=>{if(err.status==409)this.risposta="Credenziali già in Uso "
         else this.risposta="Errore Riprova più Tardi";
       }
 
-      
   }) 
-  
-  setTimeout(()=>{this.route.navigate(["/login"])},2000)
+
+  setTimeout(()=>{
+      if(this.risposta=="Credenziali già in Uso "  || "Errore Riprova più Tardi" ){
+    this.route.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+  this.route.navigate(["/user"]);
+    })
+  }
+  this.risposta="";
+  },2000)
 }
 
 

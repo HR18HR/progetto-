@@ -297,3 +297,18 @@
     transform: translate(-50%, -50%) scale(1);
   }
 }
+/* Footer */
+.footer {
+  display: grid;
+  place-items: center;
+  margin: 14px 0 12px;
+  color: #6b7280;
+  font-size: 12px;
+}
+:host {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  width: 100%;
+  background: #f3f4f6; /* sfondo esterno leggermente grigio */
+}

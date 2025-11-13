@@ -37,7 +37,7 @@ app.post("/eliminaccount", (req, res) => {
 });
 app.post("/modificapassword", (req, res) => {
     if (req.body.password == "")
-        return res.status(400).json({ message: "Passoword vuota" });
+        return res.status(400).json({ message: "Password vuota" });
     db_1.default.findOne({ email: req.body.email })
         .then((user) => {
         if (user) {
