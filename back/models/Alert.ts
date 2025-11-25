@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 const alertSchema = new Schema({
+  user_email: String,
   made_by: String,
   title: String,
   type: String,

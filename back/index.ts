@@ -1,121 +1,168 @@
-import express from 'express'
+import express from 'express';
+import { Request, Response, NextFunction } from "express";
 import mongoose from 'mongoose';
-import User from './db';
-import crypto from 'crypto'
+import User from './models/User';
+import Alert from './models/Alert';
+import crypto from 'crypto';
 import passport from 'passport';
 import { BasicStrategy } from 'passport-http';
-const app=express(); //Creazione server con express  
 import cors from 'cors';
+const { expressjwt: jwt } = require('express-jwt');
+import http = require('http');
+import jsonwebtoken = require('jsonwebtoken');
+
+
+
+
+const app = express(); //Creazione server con express
+
+let auth = jwt({ secret: 'mysecretpassword', algorithms: ['HS256'] });
+
 app.use(cors());
-app.use(express.json())
-app.listen(3000,'0.0.0.0',()=>{
-    mongoose.connect("mongodb://localhost:27017").then(()=>{
-        console.log("sono in ascolto ");
+
+app.use(express.json());
+
+
+
+
+app.get('/users', auth, (req, res, next) => {
+    // invia dati user
+    User.findById((req as any).auth._id).then((userInfo) => {
+      return res.status(200).json(userInfo);
     })
-    .catch(()=>{
-        console.log("Errore")
-    })
-    
-})
+    .catch(() => {
+      return res.status(404).json({message:"Utente Non Trovato"})
+    });
+});
 
 
+app.post('/users', async (req, res, next) => {
+    // registrazione
+    const email = req.body.email;
+    const nickname = req.body.nickname;
+    const password = req.body.password;
 
-app.post("/eliminaccount",(req,res)=>{
-  if(req.body.email=="")return res.status(400).json({message:"Email Vuota"})
-  User.deleteOne({email:req.body.email})
-  .then((result)=>{
-    if(result.deletedCount==1)res.json({message:"Account Eliminato"})
-    else res.status(404).json({message:"Utente Non Trovato"})
-  })
-   .catch((err)=>{
-      res.status(404).json({message:"Utente Non Trovato"})
-    })
-})
-
-
-app.post("/modificapassword",(req,res)=>{
-  if(req.body.password=="") return res.status(400).json({message:"Password vuota"});
-  User.findOne({email:req.body.email})
-  .then((user)=>{
-    if(user){
-    let digest=crypto.createHmac('sha512',user?.salt).update(req.body.password).digest('hex');
-    user.updateOne({$set:{digest:digest}})
-    .then((user)=>{
-      if(user!=null)res.json({message:"Passoword Modificata"})
-        else res.json({message:"Errore Riporova Più Tardi"})
-    })
-    .catch((err)=>{
-      res.status(404).json({message:"Utente Non Trovato"})
-    })
-    }
-    else res.status(404).json({message:"Utente Non Trovato"})
-    
-
-  })
-  .catch((err)=>{
-      res.status(409).json({message:"Errore durante la Ricerca dell'Utente "});
-    })
-})
-
-app.post("/registrazione",(req,res)=>{
+    // controlliamo se l'email è già registrata
+    let existingUser = await User.findOne({ email: email });
+    if(existingUser) return res.status(400).json({ message: "Email già registrata" });
+    // se l'email non è già registrata, invece
     let salt=crypto.randomBytes(16).toString('hex');
-    let digest=crypto.createHmac('sha512',salt).update(req.body.password).digest('hex');
-    User.create({email:req.body.email,digest:digest,citta:req.body.citta,salt:salt})
-    .then((user)=>{
+    let digest=crypto.createHmac('sha512',salt).update(password).digest('hex');
+    User.create({email: email, nickname: nickname, salt: salt, digest: digest })
+    .then(()=>{
        console.log("Utente Creato")
-       res.json({message:"Utente Creato"})
+       return res.status(200).json({message:"Utente Creato"})
     })
     .catch((err)=>{
-      res.status(409).json({message:"Errore durante la creazione del tuo profilo ,dati già in uso "});
+      return res.status(409).json({message:"Errore durante la creazione del tuo profilo ,dati già in uso "});
     })
-})
-
-//ROTTA per l'autenticazione: Uso di basic senza sessione che verrà gestita dai jwt.: ENDPOINT -> /login
-app.post("/login", passport.authenticate('basic', { session: false }), (req, res) => {
-  let user=<{email:string}>req.user
-   User.findOne({email:user.email})
-        .then((User) => {
-            if(User!=null){
-              console.log("Utente Loggato");
-              res.status(200).json({message:"Utente Loggato"});
-            }
-})
-        
-        .catch((err)=>{
-            res.status(500).json({ message: "Errore interno durante la ricerca dell'utente" })
-        })
-})
+});
 
 
-//Implemento strategia Basic che verrà usata nel login
-passport.use(new BasicStrategy(
-    (email, password, done) => {
-     User.findOne({email:email})
-        .then((user)=> {
-          if (!user) {
-            // Nessun utente trovato con questa email
-            return done(null, false);
-          }
-  
-          if (Checkpass(password,user)) {
-            // Password corretta
-            return done(null, user);
-          } else {
-            // Password errata
-            return done(null, false);
-          }
-        })
-        .catch((err) => {
-          // Errore nel database
-          return done(err);
-        });
+app.put('/users', auth, async (req, res, next) => {
+    // modifica dati user
+    const email = req.body.email;
+    const nickname = req.body.nickname;
+    const password = req.body.password;
+    if(email){
+      let existingUser = await User.findOne({ email: email });
+      if(existingUser) return res.status(400).json({ message: "Email già registrata" });
+      await User.findByIdAndUpdate((req as any).auth._id, { email: email });
+      return res.status(200).json({message: 'Email Modificata'});
     }
-  ));
+    else if(nickname){
+      await User.findByIdAndUpdate((req as any).auth._id, { nickname: nickname });
+      return res.status(200).json({message: 'Nickname Modificata'});
+    }
+    else if(password){
+      let salt=crypto.randomBytes(16).toString('hex');
+      let digest=crypto.createHmac('sha512',salt).update(password).digest('hex');
+      await User.findByIdAndUpdate((req as any).auth._id, { salt: salt, digest: digest });
+      return res.status(200).json({message: 'Password Modificata'});
+    }
+    else return res.status(400).json({ message: "Nessun dato da aggiornare" });
+});
 
-//funzione di controllo paassword
+
+app.delete('/users', auth, async (req, res, next) => {
+    // elimina account
+    const deleted_user = await User.findById((req as any).auth._id);
+    if(!deleted_user) return res.status(404).json({ message: 'Utente non trovato' });
+    await Alert.deleteMany({ user_email: deleted_user?.email });
+    await User.findByIdAndDelete((req as any).auth._id);
+    return res.status(200).json({message:"Account Eliminato"});
+});
+
+
+
+
+//funzione di controllo password
   let Checkpass=function(password:any,user:any): boolean {
     const hmac = crypto.createHmac('sha512', user.salt);
     hmac.update(password);
     const digest = hmac.digest('hex');
     return user.digest === digest;
   }
+
+
+//Implemento strategia Basic che verrà usata nel login
+passport.use(new BasicStrategy(
+  (email, password, done: any) => {
+    User.findOne({ email: email })
+      .then((user) => {
+        if (!user) {
+          // Nessun utente trovato con questa email
+          return done(null, false, { message: "Email non registrata" });
+        }
+        if (!Checkpass(password, user)) {
+          // Password errata
+          return done(null, false, { message: "Password errata" });
+        }
+        else {
+          // Password corretta
+          return done(null, user);
+        }
+      })
+      .catch((err) => {
+        return done(err);
+      });
+  }
+));
+
+
+//ROTTA per l'autenticazione: Uso di basic senza sessione che verrà gestita dai jwt.: ENDPOINT -> /login
+app.post("/login", (req, res, next) => {
+  passport.authenticate('basic', { session: false }, (err: any, user: any, info: any) => {
+    if (err) {
+      return res.status(500).json({ message: "Errore interno" });
+    }
+    if (!user) {
+      return res.status(401).json(info);
+    }
+    const token = jsonwebtoken.sign({ _id: user._id }, 'mysecretpassword');
+    return res.status(200).json({ message: "Utente Loggato", token });
+  })(req, res, next);
+});
+
+
+
+
+app.use( (err: any,req: Request,res: Response,next: NextFunction) => {
+
+  console.log("Request error: " + JSON.stringify(err) );
+  return res.status( err.statusCode || 500 ).json( err );
+
+});
+
+
+mongoose.connect( 'mongodb://localhost:27017')
+.then(      
+  () => {
+    let server = http.createServer(app);
+    server.listen(3000, '0.0.0.0', () => console.log("sono in ascolto "));
+  }
+).catch(
+  () => {
+    console.log("Errore" );
+  }
+);
