@@ -25,6 +25,81 @@ app.use(express.json());
 
 
 
+app.get('/alerts', async (req, res, next) => {
+  Alert.find({})
+  .then(alerts => res.status(200).json(alerts))
+  .catch(() => res.status(400).json({ message: 'Errore interno'}));
+});
+
+
+app.post('/alerts', auth, (req, res, next) => {
+  const title = req.body.title;
+  const description = req.body.description;
+  const type = req.body.type;
+  const lat = parseFloat(req.body.lat);
+  const lng = parseFloat(req.body.lng);
+  let position = { lat: lat, lng: lng };
+  User.findById((req as any).auth._id)
+  .then((user) => {
+    let made_by = user?.nickname;
+    let user_email = user?.email;
+    return Alert.create({ title: title, description: description, type: type, position: position, made_by: made_by, user_email: user_email })
+  })
+  .then(() => {
+    return res.status(200).json({message:"Segnalazione creata"})
+  })
+  .catch((err)=>{
+      return res.status(500).json({message:"Errore interno"});
+    });
+});
+
+
+app.get('/saved-locations', auth, (req, res, next) => {
+    User.findById((req as any).auth._id).then((user) => {
+      let saved_locations = user?.saved_locations || [];
+      return res.status(200).json(saved_locations);
+    })
+    .catch(() => {
+      return res.status(404).json({message:"Utente Non Trovato"})
+    });
+});
+
+
+app.post('/saved-locations', auth, (req, res, next) => {
+  const label = req.body.label;
+  const lat = parseFloat(req.body.lat);
+  const lng = parseFloat(req.body.lng);
+  let position = { lat: lat, lng: lng };
+
+  User.findById((req as any).auth._id)
+  .then((user: any) => {
+    if (!user) return res.status(404).json({ message: "Utente non trovato" });
+    user.saved_locations.push({ position: position, label: label });
+    return user.save();
+  })
+  .then(() => {
+    return res.status(200).json({ message: "Segnalazione creata" });
+  })
+  .catch((err)=>{
+    return res.status(500).json({message:"Errore interno"});
+  });
+});
+
+
+app.delete('/saved-locations', auth, async (req, res, next) => {
+  const i = parseInt((req as any).query.i);
+    const user = await User.findById((req as any).auth._id);
+    if(user) {
+      user.saved_locations.splice(i, 1);
+      await user.save();
+      return res.status(200).json({ message: "Posizione eliminata" });
+    }
+    else {
+      return res.status(404).json({ message: "Utente non trovato" });
+    }
+});
+
+
 app.get('/users', auth, (req, res, next) => {
     // invia dati user
     User.findById((req as any).auth._id).then((userInfo) => {
@@ -94,8 +169,6 @@ app.delete('/users', auth, async (req, res, next) => {
 });
 
 
-
-
 //funzione di controllo password
   let Checkpass=function(password:any,user:any): boolean {
     const hmac = crypto.createHmac('sha512', user.salt);
@@ -139,7 +212,7 @@ app.post("/login", (req, res, next) => {
     if (!user) {
       return res.status(401).json(info);
     }
-    const token = jsonwebtoken.sign({ _id: user._id }, 'mysecretpassword');
+    const token = jsonwebtoken.sign({ _id: user._id }, 'mysecretpassword', { algorithm: "HS256" });
     return res.status(200).json({ message: "Utente Loggato", token });
   })(req, res, next);
 });
