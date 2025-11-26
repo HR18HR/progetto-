@@ -7,9 +7,10 @@ import crypto from 'crypto';
 import passport from 'passport';
 import { BasicStrategy } from 'passport-http';
 import cors from 'cors';
-const { expressjwt: jwt } = require('express-jwt');
-import http = require('http');
-import jsonwebtoken = require('jsonwebtoken');
+import { expressjwt as jwt } from 'express-jwt';
+import http from 'http';
+import jsonwebtoken from 'jsonwebtoken';
+import webpush from 'web-push';
 
 
 
