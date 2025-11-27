@@ -5,7 +5,8 @@ const userSchema = new Schema({
   nickname: String,
   salt: String,
   digest: String,
-  saved_locations: [{ position: { lat: Number, lng: Number }, label: String }]
+  saved_locations: [{ position: { lat: Number, lng: Number }, label: String }],
+  fcm_token: String
 });
 
 export default model("User", userSchema);
