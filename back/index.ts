@@ -1,16 +1,15 @@
-import express from 'express';
+import express = require('express');
+import crypto = require('crypto');
+import passport = require('passport');
+import cors = require('cors');
+import http = require('http');
+import jsonwebtoken = require('jsonwebtoken');
 import { Request, Response, NextFunction } from "express";
 import mongoose from 'mongoose';
 import User from './models/User';
 import Alert from './models/Alert';
-import crypto from 'crypto';
-import passport from 'passport';
 import { BasicStrategy } from 'passport-http';
-import cors from 'cors';
 import { expressjwt as jwt } from 'express-jwt';
-import http from 'http';
-import jsonwebtoken from 'jsonwebtoken';
-import webpush from 'web-push';
 
 
 
